@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 from typing import Optional
 from passlib.context import CryptContext
@@ -6,7 +6,7 @@ import jwt
 import os
 from dotenv import load_dotenv
 from lib.mongodb import users_collection, follow_relation_collection
-from models.user import UserIn, UserResponse
+from models.user import UserResponse
 
 load_dotenv()
 
@@ -37,7 +37,7 @@ def register_user(username: str, email: str, password: str) -> dict:
 def login_user(email: str, password: str) -> Optional[dict]:
     user = users_collection.find_one({"email": email})
     if user and verify_password(password, user["password"]):
-        token = jwt.encode({"sub": str(user["_id"]), "exp": datetime.utcnow()}, SECRET_KEY, algorithm=ALGORITHM)
+        token = jwt.encode({"sub": str(user["_id"]), "exp": datetime.now(timezone.utc)}, SECRET_KEY, algorithm=ALGORITHM)
         return {"access_token": token, "token_type": "bearer"}
     return None
 

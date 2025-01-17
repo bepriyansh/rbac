@@ -1,14 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from bson import ObjectId
 
 class Post(BaseModel):
-    id: Optional[str]  # MongoDB will generate this
-    user_id: str  # User who created the post
+    id: Optional[str]
+    user_id: str 
     content: str
     created_at: datetime = datetime.now(timezone.utc)
-    updated_at: Optional[datetime] = None  # Timestamp of post update
+    updated_at: Optional[datetime] = None  
     likes_count: int = 0
     comments_count: int = 0
 

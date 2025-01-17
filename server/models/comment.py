@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, timezone
-from bson import ObjectId
 
 class Comment(BaseModel):
     id: Optional[str]
@@ -10,7 +9,7 @@ class Comment(BaseModel):
     content: str
     parent_comment_id: Optional[str] = None
     created_at: datetime = datetime.now(timezone.utc)
-    likes: List[str] = []  # List of user IDs who liked the comment
+    likes: List[str] = []  
     reply_count: int = 0  
     
     class Config:

@@ -44,3 +44,4 @@
 /server/node_modules
 /server/.vercel
 /server/.env
+/server/api/__pycache__

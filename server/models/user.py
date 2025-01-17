@@ -13,20 +13,20 @@ class UserRole(str, Enum):
     admin = "admin"
 
 class User(BaseModel):
-    id: Optional[str]  # MongoDB will generate this
+    id: Optional[str]  
     name: str
     email: str
-    password: str  # Password will be hashed
+    password: str  
     age: int
     gender: Optional[Gender]
-    role: UserRole = UserRole.user  # Default to 'user'
+    role: UserRole = UserRole.user  
     created_at: datetime = datetime.now(timezone.utc)
 
     class Config:
         orm_mode = True
 
 class UserIn(BaseModel):
-    username: str
+    username: Optional[str]
     email: str
     password: str
 
