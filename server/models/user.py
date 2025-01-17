@@ -16,11 +16,25 @@ class User(BaseModel):
     id: Optional[str]  # MongoDB will generate this
     name: str
     email: str
-    password: str  # You should hash this in the actual application
+    password: str  # Password will be hashed
     age: int
     gender: Optional[Gender]
     role: UserRole = UserRole.user  # Default to 'user'
     created_at: datetime = datetime.now(timezone.utc)
+
+    class Config:
+        orm_mode = True
+
+class UserIn(BaseModel):
+    username: str
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: str
+    created_at: datetime
 
     class Config:
         orm_mode = True

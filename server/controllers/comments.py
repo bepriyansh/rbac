@@ -6,11 +6,11 @@ from lib.mongodb import comments_collection
 def delete_replies(comment_id: str) -> None:
     replies = comments_collection.find({"parent_comment_id": comment_id})
     for reply in replies:
-        delete_replies(reply["_id"])  # Recursively delete replies
-    comments_collection.delete_many({"parent_comment_id": comment_id})  # Delete all replies
+        delete_replies(reply["_id"]) 
+    comments_collection.delete_many({"parent_comment_id": comment_id}) 
 
 def delete_comment(comment_id: str) -> bool:
-    delete_replies(comment_id)  # Delete all replies first
+    delete_replies(comment_id)  
     result = comments_collection.delete_one({"_id": ObjectId(comment_id)})
     return result.deleted_count > 0
 
@@ -21,8 +21,8 @@ def create_comment(post_id: str, user_id: str, content: str, parent_comment_id: 
         "content": content,
         "parent_comment_id": parent_comment_id,
         "created_at": datetime.now(),
-        "likes": [],  # Initialize empty list of likes
-        "reply_count": 0,  # Initialize reply count as 0
+        "likes": [],  
+        "reply_count": 0,  
     }
     result = comments_collection.insert_one(comment)
     comment["_id"] = str(result.inserted_id)
