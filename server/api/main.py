@@ -1,13 +1,20 @@
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 from pymongo import MongoClient
 from bson import ObjectId
 from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI()
 
+# Get MongoDB URI from environment variable
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 # Connect to MongoDB
-DATABASE_URL="some url string (will add this in env)"
 client = MongoClient(DATABASE_URL)
 db = client['testdb']  # Database name
 users_collection = db['users']  # Collection name
