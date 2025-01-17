@@ -51,10 +51,10 @@ def toggle_follow(follower_id: str, followed_id: str) -> bool:
     existing_relation = follow_relation_collection.find_one({"follower_id": follower_id, "followed_id": followed_id})
     if existing_relation:
         follow_relation_collection.delete_one({"follower_id": follower_id, "followed_id": followed_id})
-        return False
+        return {"success":True}
     else:
         follow_relation_collection.insert_one({"follower_id": follower_id, "followed_id": followed_id, "created_at": datetime.now()})
-        return True
+        return {"success":True}
 
 def get_user_by_id(user_id: str) -> dict:
     user = users_collection.find_one({"_id": ObjectId(user_id)})

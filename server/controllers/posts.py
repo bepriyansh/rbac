@@ -37,17 +37,30 @@ def get_posts_from_following_people(user_id: str, page: int, page_size: int) -> 
     
     return [{"_id": str(post["_id"]), **post} for post in posts]
 
-def update_post(post_id: str, content: str = None) -> bool:
-    update_fields = {}
-    update_fields["content"] = content
-    update_fields["updated_at"] = datetime.now()
+def update_post(post_id: str, user: dict, content: str = None) -> dict:
+    post = posts_collection.find_one({"_id": ObjectId(post_id)})
+    if not post:
+        return {"success": False, "message": "Post not found."}
+    if post["user_id"] != user["_id"] or user["role"] != "admin":
+        return {"success": False, "message": "Unauthorized action."}
 
+    update_fields = {"content": content, "updated_at": datetime.now()}
     result = posts_collection.update_one({"_id": ObjectId(post_id)}, {"$set": update_fields})
-    return result.modified_count > 0
+    if result.modified_count > 0:
+        return {"success": True, "message": "Post updated successfully."}
+    return {"success": False, "message": "Failed to update the post."}
 
-def delete_post(post_id: str) -> bool:
+def delete_post(post_id: str, user: dict) -> dict:
+    post = posts_collection.find_one({"_id": ObjectId(post_id)})
+    if not post:
+        return {"success": False, "message": "Post not found."}
+    if post["user_id"] != user["_id"] or user["role"] != "admin":
+        return {"success": False, "message": "Unauthorized action."}
+
     result = posts_collection.delete_one({"_id": ObjectId(post_id)})
-    return result.deleted_count > 0
+    if result.deleted_count > 0:
+        return {"success": True, "message": "Post deleted successfully."}
+    return {"success": False, "message": "Failed to delete the post."}
 
 def toggle_like(post_id: str, user_id: str) -> bool:
     post = posts_collection.find_one({"_id": ObjectId(post_id)})

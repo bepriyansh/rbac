@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from models.user import UserIn, UserResponse
 from controllers.user import register_user, login_user, toggle_follow, get_user_by_id
 from lib.verification import verifyUser
@@ -19,5 +19,5 @@ def toggle_follow_route(followed_id: str, user: dict = Depends(verifyUser)):
     return toggle_follow(follower_id, followed_id)
 
 @router.get("/user/{user_id}", response_model=UserResponse)
-def get_user(user_id: str):
+def get_user(user_id: str, user: dict = Depends(verifyUser)):
     return get_user_by_id(user_id)
