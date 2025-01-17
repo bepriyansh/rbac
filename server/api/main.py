@@ -7,8 +7,9 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 # Connect to MongoDB
-client = MongoClient("DATABASE_URL")
-db = client['rbac']  # Database name
+DATABASE_URL="some url string (will add this in env)"
+client = MongoClient(DATABASE_URL)
+db = client['testdb']  # Database name
 users_collection = db['users']  # Collection name
 
 # Pydantic model to define user data
