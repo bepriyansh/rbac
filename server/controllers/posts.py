@@ -41,7 +41,7 @@ def update_post(post_id: str, user: dict, content: str = None) -> dict:
     post = posts_collection.find_one({"_id": ObjectId(post_id)})
     if not post:
         return {"success": False, "message": "Post not found."}
-    if post["user_id"] != user["_id"] or user["role"] != "admin":
+    if not (post["user_id"] == user["_id"] or user["role"] == "admin"):
         return {"success": False, "message": "Unauthorized action."}
 
     update_fields = {"content": content, "updated_at": datetime.now()}
@@ -54,7 +54,7 @@ def delete_post(post_id: str, user: dict) -> dict:
     post = posts_collection.find_one({"_id": ObjectId(post_id)})
     if not post:
         return {"success": False, "message": "Post not found."}
-    if post["user_id"] != user["_id"] or user["role"] != "admin":
+    if not (post["user_id"] == user["_id"] or user["role"] == "admin"):
         return {"success": False, "message": "Unauthorized action."}
 
     result = posts_collection.delete_one({"_id": ObjectId(post_id)})

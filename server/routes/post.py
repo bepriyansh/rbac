@@ -23,12 +23,10 @@ def get_following_posts(page: int = 1, page_size: int = 10, user: dict = Depends
 
 @router.put("/post/{post_id}")
 def update_post_route(post_id: str, post_in: PostIn, user: dict = Depends(verifyUser)):
-    # Pass the user to the update_post function for authorization
-    return update_post(post_id, post_in.content, user)
+    return update_post(post_id, user, post_in.content)
 
 @router.delete("/post/{post_id}")
 def delete_post_route(post_id: str, user: dict = Depends(verifyUser)):
-    # Pass the user to the delete_post function for authorization
     return delete_post(post_id, user)
 
 @router.post("/toggle_like/{post_id}")
