@@ -28,17 +28,23 @@ def register_user(username: str, email: str, password: str) -> dict:
         "password": hashed_password,
         "created_at": datetime.now(),
     }
-    result = users_collection.insert_one(user)
-    user["_id"] = str(result.inserted_id)
-    user["password"] = None
+    result = users_collection.insert_one(user) 
+    user["_id"] = str(result.inserted_id) 
+    user["password"] = None  
+
+    token = jwt.encode({"sub": user["_id"], "exp": datetime.now()}, SECRET_KEY, algorithm=ALGORITHM)
+
     user_response = UserResponse(**user)
-    return user_response.dict()
+    return {"access_token": token, "token_type": "bearer", "user": user_response.model_dump()}
 
 def login_user(email: str, password: str) -> Optional[dict]:
     user = users_collection.find_one({"email": email})
     if user and verify_password(password, user["password"]):
         token = jwt.encode({"sub": str(user["_id"]), "exp": datetime.now(timezone.utc)}, SECRET_KEY, algorithm=ALGORITHM)
-        return {"access_token": token, "token_type": "bearer"}
+        user["_id"] = str(user["_id"]) 
+        user["password"] = None  
+        user_response = UserResponse(**user)
+        return {"access_token": token, "token_type": "bearer", "user": user_response.model_dump()}
     return None
 
 def toggle_follow(follower_id: str, followed_id: str) -> bool:
